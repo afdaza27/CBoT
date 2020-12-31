@@ -24,7 +24,7 @@ class Ahorcado(commands.Cog):
                          "marika", "bastardo", "caremondá", "degenerado", "ser humano despreciable", "basurero andante", "castroso", "zarrapastroso", "zunga", "sifilítico", "hijueputa", "letardado",
                          "baboso", "malparido bobo", "bocón", "gran marika", "manilarga", "descerebrado", "insecto", "carechimba", "asqueroso", "animal de monte", "idiota", "zorra arrastrada",
                          "estorbo", "desperdicio de oxígeno", "mamaburra", "mamahuevo", "mamapinga", "payaso", "chupavergas", "bestia", "pirobo", "amotro", "anormal", "subnormal", "intrascendente", "sinvergüenza",
-                         "aspirante a vendedor de bonice", "bachiloca", "indio", "sapohijueputa", "agropecuario"]
+                         "aspirante a vendedor de bonice", "bachiloca", "indio", "sapohijueputa", "agropecuario", "gripa bajita", "zopenco", "menso", "soquete", "pelmazo"]
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -80,7 +80,7 @@ class Ahorcado(commands.Cog):
     @commands.command()
     async def objecion(self, cbt, letra):
         letra = letra.lower()
-        if self.condenando:
+        if self.condenando and self.prompt != "":
             if len(letra) != 1:
                 await cbt.send("UNA letra, bobo")
                 self.state += 1
@@ -105,10 +105,13 @@ class Ahorcado(commands.Cog):
                 self.state = 5
                 self.condenando = False
 
+
             if self.state == 4:
                 self.condenando = False
                 await cbt.send(self.state_list[self.state])
                 await cbt.send(self.prompt)
+                self.prompt = ""
+                self.prompt_state = ""
             if self.state != 4:
                 await cbt.send(self.state_list[self.state])
                 await cbt.send(self.prompt_state)
@@ -134,6 +137,8 @@ class Ahorcado(commands.Cog):
                 self.condenando = False
                 await cbt.send(self.state_list[self.state])
                 await cbt.send(self.prompt)
+            self.prompt = ""
+            self.prompt_state = ""
         else:
             await cbt.send("A qué juega, "+self.insultos[random.randint(0, len(self.insultos)-1)])
 
