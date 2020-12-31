@@ -79,11 +79,11 @@ class Sabiduria(commands.Cog):
     async def on_ready(self):
         print("Sun Tzu dice: buenas tardes.")
 
-    @commands.command()
+    @commands.command(brief="Reseña del crítico Anton", description="Reseña del crítico Anton")
     async def ego(self, cbt):
         await cbt.send(self.ego)
 
-    @commands.command()
+    @commands.command(brief="Una migaja de sabiduría", description="Una migaja de sabiduría")
     async def adagio(self, cbt):
         numericio = random.randint(0, len(self.adagios)-1)
         await cbt.send(self.adagios[numericio])
