@@ -67,7 +67,7 @@ class Ahorcado(commands.Cog):
 
     @commands.command()
     async def perdonar(self, cbt):
-        if self.condenando:
+        if self.condenando and self.prompt != "":
             self.state = 0
             self.prompt = ""
             self.prompt_state = ""
