@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 import os
+from os import environ
 
 sapo = commands.Bot(command_prefix=">")
+BOT_KEY = environ["BOT_KEY"]
 
 @sapo.event
 async def on_ready():
@@ -22,4 +24,4 @@ for sapito in os.listdir("./cogotes"):
     if sapito.endswith(".py"):
         sapo.load_extension(f'cogotes.{sapito[:-3]}')
 
-sapo.run("NzkzOTAyMzk2OTA3NTg1NTg2.X-zBOQ.bzS_KgeWr4WKhwP57DGKc9Howk8")
+sapo.run(BOT_KEY)

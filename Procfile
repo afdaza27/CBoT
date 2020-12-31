@@ -1,1 +1,1 @@
-web: python cbot.py
+work: python cbot.py
