@@ -19,6 +19,12 @@ class Ahorcado(commands.Cog):
                            "|--------|\n|             |\n|           <:cogote:755197902049116201>\n|           🥋\n|           👖\n|\n-------------------------",
                            "|--------|\n|             |\n|           <:cogote:755197902049116201>\n|    💪🏼 🥋👎🏼 \n|           👖\n|\n-------------------------\nBAD ENDING.",
                            "|           <:cogote:755197902049116201> \n|    💪🏼 🥋👍🏼\n|           👖\nGOOD ENDING."]
+        self.insultos = ["imbécil", "bruto", "bobo", "bobalicón", "estúpido", "papanatas", "mequetrefe", "palurdo", "petardo", "aborto de simio", "atarandado", "cagón", "gurrupleta", "zumbambico",
+                         "tarado", "sarna", "tarúpido", "cañengo", "ñanga", "lerdo", "grandísimo macuco", "retardado", "panita", "percudido", "impedido", "subpersona", "inútil", "tontoloide",
+                         "marika", "bastardo", "caremondá", "degenerado", "ser humano despreciable", "basurero andante", "castroso", "zarrapastroso", "zunga", "sifilítico", "hijueputa", "letardado",
+                         "baboso", "malparido bobo", "bocón", "gran marika", "manilarga", "descerebrado", "insecto", "carechimba", "asqueroso", "animal de monte", "idiota", "zorra arrastrada",
+                         "estorbo", "desperdicio de oxígeno", "mamaburra", "mamahuevo", "mamapinga", "payaso", "chupavergas", "bestia", "pirobo", "amotro", "anormal", "subnormal", "intrascendente", "sinvergüenza",
+                         "aspirante a vendedor de bonice", "bachiloca", "indio", "sapohijueputa", "agropecuario"]
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -28,12 +34,13 @@ class Ahorcado(commands.Cog):
     async def condenar(self, cbt):
         if(not self.condenando):
             self.condenando = True
-            retard_timeout = ["Se demoró mucho, retrasado", "Hasta el mundial de tejo o que hijueputas", "Pirobo tan lento",
+            retard_timeout = ["Se demoró mucho, "+self.insultos[random.randint(0, len(self.insultos)-1)], "Hasta el mundial de tejo o que hijueputas", "Pirobo tan lento",
                               "Era pa ayer, pues", "Más lento que tortuga coja", "Parece Max cepillándose los dientes"]
             user = await self.sapo.fetch_user(cbt.author.id)
             await user.send("Para iniciar el juego escriba su palabra o frase. Procure no usar tildes ni caracteres graciosos. Tiene un minuto.")
             await cbt.send("Se esta generando la condena.")
-            msg = "Se pospone la condena, el retrasado no supo escribir a tiempo."
+            insulto = self.insultos[random.randint(0, len(self.insultos)-1)]
+            msg = "Se pospone la condena, el "+ insulto+" no supo escribir a tiempo."
             def check(msg):
                 return msg.author == cbt.author and msg.channel == user.dm_channel
             try:
@@ -41,7 +48,7 @@ class Ahorcado(commands.Cog):
             except asyncio.TimeoutError:
                 await user.send(retard_timeout[random.randint(0, len(retard_timeout)-1)])
                 self.condenando = False
-            if msg != "Se pospone la condena, el retrasado no supo escribir a tiempo.":
+            if msg != "Se pospone la condena, el "+ insulto+" no supo escribir a tiempo.":
                 self.prompt = msg.content.lower()
                 self.prompt_state = ""
                 for i in range(0, len(self.prompt)):
@@ -68,7 +75,7 @@ class Ahorcado(commands.Cog):
             self.condenando = False
             await cbt.send("El cogote fue perdonado, finaliza el juego. "+self.emojis["cogote"])
         else:
-            await cbt.send("¿Perdonar a quién?, bobooo")
+            await cbt.send("¿Perdonar a quién?, "+self.insultos[random.randint(0, len(self.insultos)-1)])
 
     @commands.command()
     async def objecion(self, cbt, letra):
@@ -78,7 +85,7 @@ class Ahorcado(commands.Cog):
                 await cbt.send("UNA letra, bobo")
                 self.state += 1
             elif letra in self.letters_juiced:
-                await cbt.send("Esa ya salió, ponga atención bruto")
+                await cbt.send("Esa ya salió, ponga atención "+self.insultos[random.randint(0, len(self.insultos)-1)])
                 self.state += 1
             elif letra in self.prompt:
                 prompt_state_list = []
@@ -106,7 +113,7 @@ class Ahorcado(commands.Cog):
                 await cbt.send(self.state_list[self.state])
                 await cbt.send(self.prompt_state)
         else:
-            await cbt.send("De qué putas habla, gran marika")
+            await cbt.send("De qué putas habla, "+self.insultos[random.randint(0, len(self.insultos)-1)])
 
 
     @commands.command()
@@ -128,7 +135,7 @@ class Ahorcado(commands.Cog):
                 await cbt.send(self.state_list[self.state])
                 await cbt.send(self.prompt)
         else:
-            await cbt.send("A qué juega, imbécil")
+            await cbt.send("A qué juega, "+self.insultos[random.randint(0, len(self.insultos)-1)])
 
 def setup(sapo):
     sapo.add_cog(Ahorcado(sapo))
