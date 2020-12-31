@@ -24,7 +24,7 @@ class Ahorcado(commands.Cog):
                          "marika", "bastardo", "caremondá", "degenerado", "ser humano despreciable", "basurero andante", "castroso", "zarrapastroso", "zunga", "sifilítico", "hijueputa", "letardado",
                          "baboso", "malparido bobo", "bocón", "gran marika", "manilarga", "descerebrado", "insecto", "carechimba", "asqueroso", "animal de monte", "idiota", "zorra arrastrada",
                          "estorbo", "desperdicio de oxígeno", "mamaburra", "mamahuevo", "mamapinga", "payaso", "chupavergas", "bestia", "pirobo", "amotro", "anormal", "subnormal", "intrascendente", "sinvergüenza",
-                         "aspirante a vendedor de bonice", "bachiloca", "indio", "sapohijueputa", "agropecuario", "gripa bajita", "zopenco", "menso", "soquete", "pelmazo"]
+                         "aspirante a vendedor de bonice", "bachiloca", "indio", "sapohijueputa", "agropecuario", "gripa bajita", "zopenco", "menso", "soquete", "pelmazo", "feto subdesarrollado"]
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -125,7 +125,7 @@ class Ahorcado(commands.Cog):
         for i in range(0, len(args)):
             intento += args[i]
             intento += " "
-        intento = intento.rstrip()
+        intento = intento.rstrip().lower()
         if self.condenando and self.prompt != "":
             if intento == self.prompt:
                 self.state = 5
