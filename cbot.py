@@ -5,8 +5,7 @@ from discord.ext.commands import CommandNotFound
 from os import environ
 
 sapo = commands.Bot(command_prefix=">")
-#BOT_KEY = environ["BOT_KEY"]
-BOT_KEY = "NzkzOTAyMzk2OTA3NTg1NTg2.X-zBOQ.pHMK99itgclgkHezL6_-D6nEIUg"
+BOT_KEY = environ["BOT_KEY"]
 
 async def check_mod(cbt):
     return "Bigga Nigga" in [y.name for y in cbt.author.roles] or "Bigger Nigger" in [y.name for y in cbt.author.roles] or "Biggest Niggest" in [y.name for y in cbt.author.roles]
@@ -40,5 +39,4 @@ for sapito in os.listdir("./cogotes"):
     if sapito.endswith(".py"):
         sapo.load_extension(f'cogotes.{sapito[:-3]}')
 
-#sapo.run(BOT_KEY)
 sapo.run(BOT_KEY)
