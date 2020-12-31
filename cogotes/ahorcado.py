@@ -38,7 +38,7 @@ class Ahorcado(commands.Cog):
                               "Era pa ayer, pues", "Más lento que tortuga coja", "Parece Max cepillándose los dientes"]
             user = await self.sapo.fetch_user(cbt.author.id)
             await user.send("Para iniciar el juego escriba su palabra o frase. Procure no usar tildes ni caracteres graciosos. Tiene un minuto.")
-            await cbt.send("Se esta generando la condena.")
+            await cbt.send("Se está generando la condena.")
             insulto = self.insultos[random.randint(0, len(self.insultos)-1)]
             msg = "Se pospone la condena, el "+ insulto+" no supo escribir a tiempo."
             def check(msg):
@@ -63,7 +63,7 @@ class Ahorcado(commands.Cog):
             else:
                 await cbt.send(msg)
         else:
-            await cbt.send("ESPÉRESE. Ya hay una condena en progreso.")
+            await cbt.send("ESPÉRESE, "+self.insultos[random.randint(0, len(self.insultos)-1)]+". Ya hay una condena en progreso.")
 
     @commands.command()
     async def perdonar(self, cbt):
@@ -82,7 +82,7 @@ class Ahorcado(commands.Cog):
         letra = letra.lower()
         if self.condenando and self.prompt != "":
             if len(letra) != 1:
-                await cbt.send("UNA letra, bobo")
+                await cbt.send("UNA letra, "+self.insultos[random.randint(0, len(self.insultos)-1)])
                 self.state += 1
             elif letra in self.letters_juiced:
                 await cbt.send("Esa ya salió, ponga atención "+self.insultos[random.randint(0, len(self.insultos)-1)])
