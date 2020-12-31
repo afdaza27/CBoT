@@ -126,7 +126,7 @@ class Ahorcado(commands.Cog):
             intento += args[i]
             intento += " "
         intento = intento.rstrip()
-        if self.condenando:
+        if self.condenando and self.prompt != "":
             if intento == self.prompt:
                 self.state = 5
                 self.condenando = False
