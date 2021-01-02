@@ -149,5 +149,21 @@ class YanLukas(commands.Cog):
             await cbt.send("Saldos actuales: \n"+cbt.author.nick + ": ¥" + str(self.janpueblo[str(cbt.author.id)]))
             await cbt.send(cbt.message.mentions[0].nick + ": ¥" + str(self.janpueblo[str(cbt.message.mentions[0].id)]))
 
+    @commands.command()
+    async def yanking(self, cbt):
+        listoix = self.janpueblo.items()
+        def key(item):
+            return item[1]
+        sorted(listoix, key=key, reverse=True)
+        max = 5
+        if len(listoix)<max:
+            max = len(listoix)
+        if not len(listoix):
+            await cbt.send("No hay nadie con registro de GIANLUCAS, bobo puto")
+        else:
+            await cbt.send("Top " + str(max) + " de yanburgueses:")
+            for niggy in range(0,max):
+                sapeiro = await self.sapo.fetch_user(int(listoix[niggy][0])).nick
+                await cbt.send(str(niggy+1) + ": " + sapeiro + ": ¥" + str(listoix[niggy][1]))
 
 
