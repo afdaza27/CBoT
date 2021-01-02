@@ -166,4 +166,6 @@ class YanLukas(commands.Cog):
                 sapeiro = await self.sapo.fetch_user(int(listoix[niggy][0])).nick
                 await cbt.send(str(niggy+1) + ": " + sapeiro + ": ¥" + str(listoix[niggy][1]))
 
+def setup(sapo):
+    sapo.add_cog(YanLukas(sapo))
 
