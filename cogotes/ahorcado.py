@@ -2,10 +2,13 @@ import discord
 from discord.ext import commands
 import asyncio
 import random
+from modulos.insultos import Insultos
 
 class Ahorcado(commands.Cog):
 
     def __init__(self, sapo):
+        self.Insultos = Insultos()
+        self.Insultos.cargar_insultos()
         self.sapo = sapo
         self.prompt = ""
         self.prompt_state = ""
@@ -19,27 +22,26 @@ class Ahorcado(commands.Cog):
                            "|--------|\n|             |\n|           <:cogote:755197902049116201>\n|           🥋\n|           👖\n|\n-------------------------",
                            "|--------|\n|             |\n|           <:cogote:755197902049116201>\n|    💪🏼 🥋👎🏼 \n|           👖\n|\n-------------------------\nBAD ENDING.",
                            "|           <:cogote:755197902049116201> \n|    💪🏼 🥋👍🏼\n|           👖\nGOOD ENDING."]
-        self.insultos = ["imbécil", "bruto", "bobo", "bobalicón", "estúpido", "papanatas", "mequetrefe", "palurdo", "petardo", "aborto de simio", "atarandado", "cagón", "gurrupleta", "zumbambico",
-                         "tarado", "sarna", "tarúpido", "cañengo", "ñanga", "lerdo", "grandísimo macuco", "retardado", "panita", "percudido", "impedido", "subpersona", "inútil", "tontoloide",
-                         "marika", "bastardo", "caremondá", "degenerado", "ser humano despreciable", "basurero andante", "castroso", "zarrapastroso", "zunga", "sifilítico", "hijueputa", "letardado",
-                         "baboso", "malparido bobo", "bocón", "gran marika", "manilarga", "descerebrado", "insecto", "carechimba", "asqueroso", "animal de monte", "idiota", "zorra arrastrada",
-                         "estorbo", "desperdicio de oxígeno", "mamaburra", "mamahuevo", "mamapinga", "payaso", "chupavergas", "bestia", "pirobo", "amotro", "anormal", "subnormal", "intrascendente", "sinvergüenza",
-                         "aspirante a vendedor de bonice", "bachiloca", "indio", "sapohijueputa", "agropecuario", "gripa bajita", "zopenco", "menso", "soquete", "pelmazo", "feto subdesarrollado"]
+
+
+    async def actualizar_insultos(self):
+        self.Insultos.cargar_insultos()
+
 
     @commands.Cog.listener()
     async def on_ready(self):
         print("Cogote listo para ser ahorcado.")
 
-    @commands.command()
+    @commands.command(brief="Condena al cogote a la horca", description="Condena al cogote a la horca. Mirar los DMs")
     async def condenar(self, cbt):
         if(not self.condenando):
             self.condenando = True
-            retard_timeout = ["Se demoró mucho, "+self.insultos[random.randint(0, len(self.insultos)-1)], "Hasta el mundial de tejo o que hijueputas", "Pirobo tan lento",
+            retard_timeout = ["Se demoró mucho, "+self.Insultos.insultar(), "Hasta el mundial de tejo o que hijueputas", "Pirobo tan lento",
                               "Era pa ayer, pues", "Más lento que tortuga coja", "Parece Max cepillándose los dientes"]
             user = await self.sapo.fetch_user(cbt.author.id)
             await user.send("Para iniciar el juego escriba su palabra o frase. Procure no usar tildes ni caracteres graciosos. Tiene un minuto.")
             await cbt.send("Se está generando la condena.")
-            insulto = self.insultos[random.randint(0, len(self.insultos)-1)]
+            insulto = self.Insultos.insultar()
             msg = "Se pospone la condena, el "+ insulto+" no supo escribir a tiempo."
             def check(msg):
                 return msg.author == cbt.author and msg.channel == user.dm_channel
@@ -63,9 +65,9 @@ class Ahorcado(commands.Cog):
             else:
                 await cbt.send(msg)
         else:
-            await cbt.send("ESPÉRESE, "+self.insultos[random.randint(0, len(self.insultos)-1)]+". Ya hay una condena en progreso.")
+            await cbt.send("ESPÉRESE, "+self.Insultos.insultar()+". Ya hay una condena en progreso.")
 
-    @commands.command()
+    @commands.command(brief="Perdonar al cogote de su condena", description="Perdona al cogote de su condena. Se cancela el juego de ahorcado")
     async def perdonar(self, cbt):
         if self.condenando and self.prompt != "":
             self.state = 0
@@ -75,17 +77,17 @@ class Ahorcado(commands.Cog):
             self.condenando = False
             await cbt.send("El cogote fue perdonado, finaliza el juego. "+self.emojis["cogote"])
         else:
-            await cbt.send("¿Perdonar a quién?, "+self.insultos[random.randint(0, len(self.insultos)-1)])
+            await cbt.send("¿Perdonar a quién?, "+self.Insultos.insultar())
 
-    @commands.command()
+    @commands.command(brief="Objeta pa que no ahorquen al cogote", description="Objetar por medio de una letra para intentar salvar al cogote")
     async def objecion(self, cbt, letra):
         letra = letra.lower()
         if self.condenando and self.prompt != "":
             if len(letra) != 1:
-                await cbt.send("UNA letra, "+self.insultos[random.randint(0, len(self.insultos)-1)])
+                await cbt.send("UNA letra, "+self.Insultos.insultar())
                 self.state += 1
             elif letra in self.letters_juiced:
-                await cbt.send("Esa ya salió, ponga atención "+self.insultos[random.randint(0, len(self.insultos)-1)])
+                await cbt.send("Esa ya salió, ponga atención "+self.Insultos.insultar())
                 self.state += 1
             elif letra in self.prompt:
                 prompt_state_list = []
@@ -104,8 +106,6 @@ class Ahorcado(commands.Cog):
             if "?" not in self.prompt_state:
                 self.state = 5
                 self.condenando = False
-
-
             if self.state == 4:
                 self.condenando = False
                 await cbt.send(self.state_list[self.state])
@@ -116,10 +116,10 @@ class Ahorcado(commands.Cog):
                 await cbt.send(self.state_list[self.state])
                 await cbt.send(self.prompt_state)
         else:
-            await cbt.send("De qué putas habla, "+self.insultos[random.randint(0, len(self.insultos)-1)])
+            await cbt.send("De qué putas habla, "+self.Insultos.insultar())
 
 
-    @commands.command()
+    @commands.command(brief="Intentar absolver al cogote de su condena", description="Intentar absolver al cogote de su condena adivinando la palabra o frase del juego de ahorcado")
     async def absolver(self, cbt, *args):
         intento = ""
         for i in range(0, len(args)):
@@ -140,7 +140,7 @@ class Ahorcado(commands.Cog):
             self.prompt = ""
             self.prompt_state = ""
         else:
-            await cbt.send("A qué juega, "+self.insultos[random.randint(0, len(self.insultos)-1)])
+            await cbt.send("A qué juega, "+self.Insultos.insultar())
 
 def setup(sapo):
     sapo.add_cog(Ahorcado(sapo))

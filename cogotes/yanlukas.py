@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import os
 import cbot
+from modulos.insultos import Insultos
 
 class YanLukas(commands.Cog):
 
@@ -10,6 +11,8 @@ class YanLukas(commands.Cog):
         self.cogote = "<:cogote:755197902049116201>"
         self.greed = "<:greed:339595362551595009>"
         self.janpueblo = {}
+        self.Insultos = Insultos()
+        self.Insultos.cargar_insultos()
         # ACA SE CARGA EL ÍNDICE DE GENTE REGISTRADA CON JANLUCAS
         # Es un DICCIONARIO porque así se me ocurrió
         # hijueputa
@@ -21,6 +24,9 @@ class YanLukas(commands.Cog):
                 yanlucc = int(janluc.readlines()[0].strip())
                 self.janpueblo[gianluk] = yanlucc
                 janluc.close()
+
+    async def actualizar_insultos(self):
+        self.Insultos.cargar_insultos()
 
     #A ESTA FUNCIÓN SE LE PASA UN CAMBIO DE VALOR POR PARÁMETRO
     #ES DECIR, SI SE LE VAN A AGREGAR 10 YANLUCAS A ALGUIEN, SE LE PASA balor = 10
@@ -55,7 +61,7 @@ class YanLukas(commands.Cog):
     async def on_ready(self):
         print("Módulo de ¥anLukas cargado.")
 
-    @commands.command()
+    @commands.command(brief="Otorga una cierta cantidad de ¥anLukas a un usuario", description="Otorga una cierta cantidad de ¥anLukas a un usuario. La estructura del comando es >otorgar cantidad usuario(s). Si el usuario no está registrado en el YanBanco se registra con la cantidad otorgada")
     async def otorgar(self, cbt, q="0", sapoides=None):
         if await cbot.check_mod(cbt):
             if '@' in q:
@@ -81,7 +87,7 @@ class YanLukas(commands.Cog):
         else:
             await cbt.send("Nadie le dio permiso de eso, pirobo bobo")
 
-    @commands.command()
+    @commands.command(brief="Cobra un impuesto en Janlucas a un usuario", description="Cobra un impuesto en Janlucas a un usuario. La estructura del comando es >impuesto cantidad usuario(s)")
     async def impuesto(self, cbt, q = "0", sapoides=None):
         if  await cbot.check_mod(cbt):
             if '@' in q:
@@ -105,7 +111,7 @@ class YanLukas(commands.Cog):
         else:
             await cbt.send("Nadie le dio permiso de eso, pirobo bobo")
 
-    @commands.command()
+    @commands.command(brief="Consultar el saldo de gianluks de un usuario", description="Consultar el saldo de gianluks de un usuario. Si no se ingresa un usuario específico se consulta el saldo de quien escribió el comando")
     async def saldo(self, cbt, sapillo=None):
         dato = cbt.message.mentions
         if sapillo is None or not dato:
@@ -117,7 +123,7 @@ class YanLukas(commands.Cog):
         else:
             await cbt.send(sapillo.display_name + ": ¥" + str(self.janpueblo[str(sapillo.id)]))
 
-    @commands.command()
+    @commands.command(brief="Registra un usuario en el ¥anBanco", description ="Registra un usuario en el ¥anBanco y se le otorga una cantidad de LlanLucas predeterminada")
     async def registrar(self, cbt):
         if str(cbt.author.id) in self.janpueblo.keys():
             await cbt.send("¿Para que se registra al ¥anBanco si ya está registrado? Malparido bobo")
@@ -125,7 +131,7 @@ class YanLukas(commands.Cog):
             self.persistir(str(cbt.author.id))
             await cbt.send("Registro de JanLukas completo. Su saldo inicial es de ¥50.")
 
-    @commands.command()
+    @commands.command(brief="Realiza una transferencia entre dos usuarios", description ="Realiza una transferencia entre dos usuarios. La estructura del comando es >pagar cantidad usuario")
     async def pagar(self, cbt, q="0", sapinho = None):
 
         if '@' in q:
@@ -147,10 +153,12 @@ class YanLukas(commands.Cog):
             self.persistir(str(cbt.author.id), -q)
             self.persistir(str(cbt.message.mentions[0].id), q)
             await cbt.send("Transferencia de ¥"+ str(q) +" realizada. "+self.greed)
-            await cbt.send("Saldos actuales: \n"+cbt.author.nick + ": ¥" + str(self.janpueblo[str(cbt.author.id)]))
-            await cbt.send(cbt.message.mentions[0].nick + ": ¥" + str(self.janpueblo[str(cbt.message.mentions[0].id)]))
+            await cbt.send("Saldos actuales: \n"+cbt.author.display_name + ": ¥" + str(self.janpueblo[str(cbt.author.id)]))
+            sapaso = cbt.message.mentions[0]
+            sapeiro = sapaso.display_name
+            await cbt.send(sapeiro + ": ¥" + str(self.janpueblo[str(cbt.message.mentions[0].id)]))
 
-    @commands.command()
+    @commands.command(brief="Muestra los mayores Yanburgueses del CBT", description = "Muestra el top 5 de Yanburgueses del servidor")
     async def yanking(self, cbt):
         listoix = list(self.janpueblo.keys())
         def key(item):
