@@ -13,6 +13,21 @@ class YanLukas(commands.Cog):
         self.janpueblo = {}
         self.Insultos = Insultos()
         self.Insultos.cargar_insultos()
+        #Big play funciona como el estado de la apuesta
+        #0 - No hay apuesta
+        #1 - Se aceptan apuestas
+        #2 - Apuesta en juego
+        self.bigplay = 0
+        #Las apuestas c guardan en una diccionario en un diccionario, bajo la llave "o", y bajo la segunda llave del id de la opción
+        #tambien tiene la llaves "u", "t", "prompt" y "pirobo"
+        #cada opción de apuesta tiene otro triplehijueputa diccionario, con:
+        #prompt de la opción, cantidad de xhanglukas en total, tasa de retorno
+        self.bets = {"u": [], #Lista de tuplas de usuarios que apostaron (id, opcion, cantidad)
+                     "o": {},
+                     "t": 0, #total de yanlvkinhas en la bolsa
+                     "prompt": "", #prompt de la apuesta
+                     "pirobo": None #el hijueputa que invocó la apuesta
+                     }
         # ACA SE CARGA EL ÍNDICE DE GENTE REGISTRADA CON JANLUCAS
         # Es un DICCIONARIO porque así se me ocurrió
         # hijueputa
@@ -61,7 +76,7 @@ class YanLukas(commands.Cog):
     async def on_ready(self):
         print("Módulo de ¥anLukas cargado.")
 
-    @commands.command(brief="Otorga una cierta cantidad de ¥anLukas a un usuario", description="Otorga una cierta cantidad de ¥anLukas a un usuario. La estructura del comando es >otorgar cantidad usuario(s). Si el usuario no está registrado en el YanBanco se registra con la cantidad otorgada")
+    @commands.command(brief="Otorga ¥anLukas a un usuario", description="Otorga una cierta cantidad de ¥anLukas a uno o más usuarios. La estructura del comando es >otorgar cantidad @usuario(s). Si el usuario no está registrado en el YanBanco se registra con la cantidad otorgada")
     async def otorgar(self, cbt, q="0", sapoides=None):
         if await cbot.check_mod(cbt):
             if '@' in q:
@@ -87,7 +102,7 @@ class YanLukas(commands.Cog):
         else:
             await cbt.send("Nadie le dio permiso de eso, pirobo bobo")
 
-    @commands.command(brief="Cobra un impuesto en Janlucas a un usuario", description="Cobra un impuesto en Janlucas a un usuario. La estructura del comando es >impuesto cantidad usuario(s)")
+    @commands.command(brief="Cobra un impuesto en Xhanlucas", description="Cobra un impuesto en Janlucas a uno o más usuarios. La estructura del comando es >impuesto cantidad @usuario(s)")
     async def impuesto(self, cbt, q = "0", sapoides=None):
         if  await cbot.check_mod(cbt):
             if '@' in q:
@@ -111,7 +126,7 @@ class YanLukas(commands.Cog):
         else:
             await cbt.send("Nadie le dio permiso de eso, pirobo bobo")
 
-    @commands.command(brief="Consultar el saldo de gianluks de un usuario", description="Consultar el saldo de gianluks de un usuario. Si no se ingresa un usuario específico se consulta el saldo de quien escribió el comando")
+    @commands.command(brief="Consultar el saldo de gianluks", description="Consultar el saldo de gianluks de un usuario. Si no se ingresa un usuario específico se consulta el saldo de quien escribió el comando")
     async def saldo(self, cbt, sapillo=None):
         dato = cbt.message.mentions
         if sapillo is None or not dato:
@@ -123,7 +138,7 @@ class YanLukas(commands.Cog):
         else:
             await cbt.send(sapillo.display_name + ": ¥" + str(self.janpueblo[str(sapillo.id)]))
 
-    @commands.command(brief="Registra un usuario en el ¥anBanco", description ="Registra un usuario en el ¥anBanco y se le otorga una cantidad de LlanLucas predeterminada")
+    @commands.command(brief="Registrarse en el ¥anBanco", description ="Registra al invocador del comando en el ¥anBanco y se le otorga una cantidad de LlanLucas predeterminada")
     async def registrar(self, cbt):
         if str(cbt.author.id) in self.janpueblo.keys():
             await cbt.send("¿Para que se registra al ¥anBanco si ya está registrado? Malparido bobo")
@@ -131,7 +146,7 @@ class YanLukas(commands.Cog):
             self.persistir(str(cbt.author.id))
             await cbt.send("Registro de JanLukas completo. Su saldo inicial es de ¥50.")
 
-    @commands.command(brief="Realiza una transferencia entre dos usuarios", description ="Realiza una transferencia entre dos usuarios. La estructura del comando es >pagar cantidad usuario")
+    @commands.command(brief="Realiza un pago a un usuario", description ="Realiza una transferencia entre dos usuarios. La estructura del comando es >pagar cantidad @usuario")
     async def pagar(self, cbt, q="0", sapinho = None):
 
         if '@' in q:
@@ -158,7 +173,7 @@ class YanLukas(commands.Cog):
             sapeiro = sapaso.display_name
             await cbt.send(sapeiro + ": ¥" + str(self.janpueblo[str(cbt.message.mentions[0].id)]))
 
-    @commands.command(brief="Muestra los mayores Yanburgueses del CBT", description = "Muestra el top 5 de Yanburgueses del servidor")
+    @commands.command(brief="Muestra los mayores Yanburgueses de la mazmorra CBT", description = "Muestra el top 5 de Yanburgueses del servidor")
     async def yanking(self, cbt):
         listoix = list(self.janpueblo.keys())
         def key(item):
@@ -181,6 +196,119 @@ class YanLukas(commands.Cog):
                 sapeiro = sapaso.display_name
                 corotinho += str(niggy+1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c])+"\n"
             await cbt.send(corotinho)
+
+    @commands.command(brief="Invocar y avanzar una apuesta", description = "Comando multiuso. En su primera invocación, su estructura es >moneyman prompt opcion1 opcion2 ... opciónN. Es importante que cada uno de los argumentos del comando estén entre comillas. Una vez invocado así, se abren las apuestas, y la estructura del comando cambia a >moneyman (sin argumentos) para cerrar las apuestas. Durante este periodo, se puede apostar con >apostar. Finalmente, el comando >moneyman idOpcionGanadora reparte las hhanlux a los ganadores, y revierte el estado del comando al inicial.")
+    async def moneyman(self, cbt, *args):
+        if self.bigplay == 0:
+            # C abren apuestas
+            if args is None or len(args)<1:
+                await cbt.send("Debe basar la apuesta en algo, " + self.Insultos.insultar())
+            elif len(args)<3:
+                await cbt.send("Incluya por lo menos 2 opciones para apostar más bien, " + self.Insultos.insultar())
+            else:
+                self.bets["prompt"] = args[0]
+                self.bets["pirobo"] = cbt.author.id
+                self.bigplay = 1
+                cogote = "APUESTA DECLARADA \n"+ args[0]
+                for sapito in range(1, len(args)):
+                    self.bets["o"][str(sapito)] = {
+                        "prompt": args[sapito],
+                        "total": 0,
+                        "r": 1
+                    }
+                    cogote += "\n" + str(sapito)+": " +args[sapito]
+                cogote += "\n Diga [>apostar opción cantidad] para entrar a la apuesta"
+                await cbt.send(cogote)
+        elif self.bigplay == 1 and self.bets["pirobo"] == cbt.author.id:
+            # C cierran apuestas
+            if len(self.bets["u"]) == 0:
+                await cbt.send("Nadie ha apostado aun, " + self.Insultos.insultar() + "\n Si va a cancelar, use >refund")
+            else:
+                self.bigplay = 2
+                corote = "Apuestas cerradas: \n"
+                for sapillo in self.bets["o"].keys():
+                    corote += sapillo + " - " + self.bets["o"][sapillo]["prompt"] + ": ¥" + str(self.bets["o"][sapillo]["total"]) + ", retorno de " + str(self.bets["o"][sapillo]["r"]) + "\n"
+                await cbt.send(corote+" Esperando resultados.")
+        elif self.bigplay == 2 and self.bets["pirobo"] == cbt.author.id:
+            # C acaba la apuesta
+            if args is None or len(args) < 1:
+                await cbt.send("Debe declarar un resultado como ganador, " + self.Insultos.insultar())
+            else:
+                vic = args[0]
+                if vic not in self.bets["o"].keys():
+                    await cbt.send("Esa opción es inválida, " + self.Insultos.insultar())
+                else:
+                    r = float(self.bets["o"][vic]["r"])
+                    for niggy in self.bets["u"]:
+                        robo = 0
+                        if niggy[1] == vic:
+                            q = int(niggy[2]*r)
+                            robo+=q
+                            self.persistir(str(niggy[0]), q)
+                    await cbt.send("¥"+str(robo)+" repartidas a la opción " + vic + ": " + self.bets["o"][vic]["prompt"])
+                    robo = abs(self.bets["t"]-robo)
+                    self.persistir(str(self.sapo.user.id), robo)
+                    self.bets = {"u": [],  # Lista de tuplas de usuarios que apostaron (id, opcion, cantidad)
+                                 "o": {},
+                                 "t": 0,
+                                 "prompt": "",
+                                 "pirobo": None
+                                 }
+                    self.bigplay = 0
+        else:
+            await cbt.send("Ya hay una apuesta en juego, " + self.Insultos.insultar())
+
+    @commands.command(brief="Lo que el nombre implica", description = "Apostar en una apuesta abierta. La estructura del comando es >apostar idOpcion cantidad. Apuesta la cantidad de Yanlucas determinada a la opción dada como identificador. El comando sólo se puede utilizar si hay una apuesta abierta.")
+    async def apostar(self, cbt, *args):
+        if self.bigplay==0:
+            await cbt.send("No hay una apuesta en juego, " + self.Insultos.insultar())
+        elif self.bigplay==2:
+            await cbt.send("Ya se cerraron apuestas, " + self.Insultos.insultar())
+        elif cbt.author.id == self.bets["pirobo"]:
+            await cbt.send("No puede apostar en su propia apuesta, " + self.Insultos.insultar())
+        elif str(cbt.author.id) not in self.janpueblo.keys():
+            await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.cogote)
+        elif self.janpueblo[str(cbt.author.id)]==0:
+            await cbt.send("USTED no tiene GIANLUKAS, bobo pobre " + self.cogote)
+        elif args is None or len(args)<2:
+            await cbt.send("Use el comando completo " + self.Insultos.insultar() + "\n La estructura del comando es >apostar opción cantidad")
+        elif args[0] not in self.bets["o"].keys():
+            await cbt.send("Opción invalida " + self.Insultos.insultar())
+        elif int(args[1])<=0:
+            await cbt.send("Tan chistosito, " + self.Insultos.insultar())
+        else:
+            q = int(args[1])
+            corote = ""
+            if q>=self.janpueblo[str(cbt.author.id)]:
+                q = self.janpueblo[str(cbt.author.id)]
+                corote = "Si señores, ALL IN \n"
+            self.persistir(str(cbt.author.id), -q)
+            self.bets["u"].append(
+                (cbt.author.id, args[0], q)
+            )
+            self.bets["t"] += q
+            self.bets["o"][args[0]]["total"] += q
+            self.bets["o"][args[0]]["r"] = self.bets["t"]/self.bets["o"][args[0]]["total"]
+            corote += "¥" + str(q) + " apostadas a la opción " + args[0] + ": " + self.bets["o"][args[0]]["prompt"]
+            await cbt.send(corote)
+
+    @commands.command(brief="Cancela una apuesta", description = "Cancelar una apuesta abierta. La estructura del comando es >refund. Sólo se puede llamar por el que invocó la apuesta o un moderador.")
+    async def refund(self, cbt):
+        if self.bigplay==0:
+            await cbt.send("¿Refund de que? " + self.Insultos.insultar())
+        elif cbt.author.id != self.bets["pirobo"] or not cbot.check_mod(cbt):
+            await cbt.send("Nadie le dio permiso de eso, " + self.Insultos.insultar())
+        else:
+            self.bigplay=0
+            for amiguinho in self.bets["u"]:
+                self.persistir(str(amiguinho[0]), amiguinho[2])
+            self.bets = {"u": [],  # Lista de tuplas de usuarios que apostaron (id, opcion, cantidad)
+                         "o": {},
+                         "t": 0,
+                         "prompt": "",
+                         "pirobo": None
+                         }
+            await cbt.send("Apuesta cancelada, yanlucas restauradas.")
 
 def setup(sapo):
     sapo.add_cog(YanLukas(sapo))
