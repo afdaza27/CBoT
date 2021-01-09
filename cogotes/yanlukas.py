@@ -239,8 +239,8 @@ class YanLukas(commands.Cog):
                     await cbt.send("Esa opción es inválida, " + self.Insultos.insultar())
                 else:
                     r = float(self.bets["o"][vic]["r"])
+                    robo = 0
                     for niggy in self.bets["u"]:
-                        robo = 0
                         if niggy[1] == vic:
                             q = int(niggy[2]*r)
                             robo+=q
