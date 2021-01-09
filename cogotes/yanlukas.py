@@ -266,6 +266,8 @@ class YanLukas(commands.Cog):
             await cbt.send("Ya se cerraron apuestas, " + self.Insultos.insultar())
         elif cbt.author.id == self.bets["pirobo"]:
             await cbt.send("No puede apostar en su propia apuesta, " + self.Insultos.insultar())
+        elif cbt.author.id in self.ludopatas():
+            await cbt.send("Usted ya apostó, " + self.Insultos.insultar())
         elif str(cbt.author.id) not in self.janpueblo.keys():
             await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.cogote)
         elif self.janpueblo[str(cbt.author.id)]==0:
@@ -288,7 +290,10 @@ class YanLukas(commands.Cog):
             )
             self.bets["t"] += q
             self.bets["o"][args[0]]["total"] += q
-            self.bets["o"][args[0]]["r"] = self.bets["t"]/self.bets["o"][args[0]]["total"]
+            #self.bets["o"][args[0]]["r"] = self.bets["t"]/self.bets["o"][args[0]]["total"]
+            for sapillo in self.bets["o"].keys():
+                if self.bets["o"][sapillo]["total"]!=0:
+                    self.bets["o"][sapillo]["r"] = self.bets["t"]/self.bets["o"][sapillo]["total"]
             corote += "¥" + str(q) + " apostadas a la opción " + args[0] + ": " + self.bets["o"][args[0]]["prompt"]
             await cbt.send(corote)
 
@@ -296,7 +301,7 @@ class YanLukas(commands.Cog):
     async def refund(self, cbt):
         if self.bigplay==0:
             await cbt.send("¿Refund de que? " + self.Insultos.insultar())
-        elif cbt.author.id != self.bets["pirobo"] or not cbot.check_mod(cbt):
+        elif cbt.author.id != self.bets["pirobo"] or not await cbot.check_mod(cbt):
             await cbt.send("Nadie le dio permiso de eso, " + self.Insultos.insultar())
         else:
             self.bigplay=0
@@ -309,6 +314,12 @@ class YanLukas(commands.Cog):
                          "pirobo": None
                          }
             await cbt.send("Apuesta cancelada, yanlucas restauradas.")
+
+    def ludopatas(self):
+        niggas = []
+        for niggy in self.bets["u"]:
+            niggas.append(niggy[0])
+        return niggas
 
 def setup(sapo):
     sapo.add_cog(YanLukas(sapo))
