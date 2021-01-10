@@ -81,6 +81,8 @@ class YanLukas(commands.Cog):
         if await cbot.check_mod(cbt):
             if '@' in q:
                 await cbt.send("La estructura del comando es >otorgar cantidad usuario(s), bobo")
+            elif "." in q or "," in q:
+                await cbt.send("No hay ¥anCentavos, gran imbécil")
             elif int(q)<0:
                 await cbt.send("No le puede otorgar una cantidad negativa a alguien bobo hijueputa")
                 await cbt.send("Use el comando >impuesto para eso")
@@ -104,9 +106,11 @@ class YanLukas(commands.Cog):
 
     @commands.command(brief="Cobra un impuesto en Xhanlucas", description="Cobra un impuesto en Janlucas a uno o más usuarios. La estructura del comando es >impuesto cantidad @usuario(s)")
     async def impuesto(self, cbt, q = "0", sapoides=None):
-        if  await cbot.check_mod(cbt):
+        if await cbot.check_mod(cbt):
             if '@' in q:
                 await cbt.send("La estructura del comando es >impuesto cantidad usuario(s), bobo")
+            elif "." in q or "," in q:
+                await cbt.send("No hay ¥anCentavos, gran imbécil")
             elif int(q) < 0:
                 await cbt.send("No le puede cobrar una cantidad negativa a alguien bobo hijueputa")
                 await cbt.send("Use el comando >otorgar para eso")
@@ -151,6 +155,8 @@ class YanLukas(commands.Cog):
 
         if '@' in q:
             await cbt.send("La estructura del comando es >pagar cantidad usuario, bobo magnánimo")
+        elif "." in q or "," in q:
+            await cbt.send("No hay ¥anCentavos, gran imbécil")
         elif int(q) < 0:
             await cbt.send("No le puede pagar una cantidad negativa a alguien bobo hijueputa")
         elif int(q) == 0:
