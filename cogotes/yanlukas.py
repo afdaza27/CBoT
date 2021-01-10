@@ -299,12 +299,12 @@ class YanLukas(commands.Cog):
 
     @commands.command(brief="Cancela una apuesta", description = "Cancelar una apuesta abierta. La estructura del comando es >refund. Sólo se puede llamar por el que invocó la apuesta o un moderador.")
     async def refund(self, cbt):
+        jannies = await cbot.check_mod(cbt)
         if self.bigplay==0:
             await cbt.send("¿Refund de que? " + self.Insultos.insultar())
-        elif cbt.author.id != self.bets["pirobo"] or not await cbot.check_mod(cbt):
+        elif cbt.author.id != self.bets["pirobo"] or not jannies:
             await cbt.send("Nadie le dio permiso de eso, " + self.Insultos.insultar())
         else:
-            self.bigplay=0
             for amiguinho in self.bets["u"]:
                 self.persistir(str(amiguinho[0]), amiguinho[2])
             self.bets = {"u": [],  # Lista de tuplas de usuarios que apostaron (id, opcion, cantidad)
@@ -313,6 +313,7 @@ class YanLukas(commands.Cog):
                          "prompt": "",
                          "pirobo": None
                          }
+            self.bigplay = 0
             await cbt.send("Apuesta cancelada, yanlucas restauradas.")
 
     def ludopatas(self):
