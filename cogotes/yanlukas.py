@@ -308,7 +308,7 @@ class YanLukas(commands.Cog):
         jannies = await cbot.check_mod(cbt)
         if self.bigplay==0:
             await cbt.send("¿Refund de que? " + self.Insultos.insultar())
-        elif cbt.author.id != self.bets["pirobo"] or not jannies:
+        elif cbt.author.id != self.bets["pirobo"] and not jannies:
             await cbt.send("Nadie le dio permiso de eso, " + self.Insultos.insultar())
         else:
             for amiguinho in self.bets["u"]:
