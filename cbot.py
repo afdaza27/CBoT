@@ -8,7 +8,7 @@ import shutil
 from modulos.insultos import Insultos
 
 sapo = commands.Bot(command_prefix=">")
-BOT_KEY = "NzkzOTAyMzk2OTA3NTg1NTg2.X-zBOQ.XQZCX4EvIbBGPV_YZQFzuvesNHI"#environ["BOT_KEY"]
+BOT_KEY = environ["BOT_KEY"]
 
 
 async def check_mod(cbt):
