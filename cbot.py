@@ -4,12 +4,28 @@ import os
 from discord.ext.commands import CommandNotFound
 from os import environ
 import datetime
-import shutil
 from modulos.insultos import Insultos
+import pyrebase
 
 sapo = commands.Bot(command_prefix=">")
 BOT_KEY = environ["BOT_KEY"]
+FIREBASE_KEY = environ["FIREBASE_KEY"]
 
+firebaseConfig = {
+    "apiKey": FIREBASE_KEY,
+    "authDomain": "cbot-23554.firebaseapp.com",
+    "databaseURL": "https://cbot-23554-default-rtdb.firebaseio.com",
+    "projectId": "cbot-23554",
+    "storageBucket": "cbot-23554.appspot.com",
+    "messagingSenderId": "721323806712",
+    "appId": "1:721323806712:web:137aac9c386f0a3e29100d"
+  }
+
+firebase = pyrebase.initialize_app(firebaseConfig)
+db = firebase.database()
+
+def get_db():
+    return db
 
 async def check_mod(cbt):
     return "Bigga Nigga" in [y.name for y in cbt.author.roles] or "Bigger Nigger" in [y.name for y in
@@ -25,7 +41,7 @@ async def actualizar_insultos():
 
 @sapo.event
 async def on_command_error(cbt, error):
-    insultos = Insultos()
+    insultos = Insultos(get_db())
     insultos.cargar_insultos()
     if isinstance(error, CommandNotFound):
         await cbt.send("No sé de qué habla, "+insultos.insultar())
@@ -53,20 +69,11 @@ async def unload(cbt, cogote):
         await cbt.send("No tiene permiso")
 
 
-@sapo.command()
-async def guardar_datos(cbt):
-    if await check_mod(cbt):
-        now = datetime.datetime.now()
-        current_time = now.strftime("%Y-%B-%a%d_%H-%M-%S")
-        shutil.make_archive('CBoT_Datos_' + current_time, 'zip', './data')
-        await cbt.send(file=discord.File(r'./CBoT_Datos_' + current_time + '.zip'))
-    else:
-        await cbt.send("No tiene permiso")
 
 
 @sapo.command()
 async def agregar_insulto(cbt, insulto_nuevo):
-    insultos = Insultos()
+    insultos = Insultos(get_db())
     lista_insultos = insultos.cargar_insultos()
     if await check_mod(cbt):
         if insulto_nuevo in lista_insultos:

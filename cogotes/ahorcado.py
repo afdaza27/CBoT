@@ -3,11 +3,12 @@ from discord.ext import commands
 import asyncio
 import random
 from modulos.insultos import Insultos
+import cbot
 
 class Ahorcado(commands.Cog):
 
     def __init__(self, sapo):
-        self.Insultos = Insultos()
+        self.Insultos = Insultos(cbot.get_db())
         self.Insultos.cargar_insultos()
         self.sapo = sapo
         self.prompt = ""

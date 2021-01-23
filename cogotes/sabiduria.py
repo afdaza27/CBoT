@@ -7,7 +7,8 @@ from modulos.insultos import Insultos
 class Sabiduria(commands.Cog):
 
     def __init__(self, sapo):
-        self.Insultos = Insultos()
+        self.db = cbot.get_db()
+        self.Insultos = Insultos(cbot.get_db())
         self.Insultos.cargar_insultos()
         self.sapo = sapo
         self.adagios = self.cargar_adagios()
@@ -18,14 +19,11 @@ class Sabiduria(commands.Cog):
         self.Insultos.cargar_insultos()
 
     def cargar_adagios(self):
-        ruta_archivo = "./data/adagios.txt"
-        archivo_adagios = open(ruta_archivo, "r", encoding="utf-8")
-        adagios = []
-        for adagio in archivo_adagios:
-            adagio = adagio.strip()
-            adagios.append(adagio)
-        archivo_adagios.close()
-        return adagios
+        adagios = self.db.child("Adagios").get().each()
+        adagios_list = []
+        for adagio in adagios:
+            adagios_list.append(adagio.val())
+        return adagios_list
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -44,15 +42,8 @@ class Sabiduria(commands.Cog):
     async def agregar_adagio(self, cbt, nuevo_adagio):
         if await cbot.check_mod(cbt):
             if nuevo_adagio not in self.adagios:
-                ruta_archivo = "./data/adagios.txt"
-                archivo_adagios = open(ruta_archivo, "r", encoding="utf-8")
-                lineas = archivo_adagios.readlines()
-                archivo_adagios.close()
-                lineas.append("\n" + nuevo_adagio)
                 self.adagios.append(nuevo_adagio)
-                with open('./data/adagios.txt', 'w', encoding="utf-8") as janarchibo:
-                    janarchibo.writelines(lineas)
-                    janarchibo.close()
+                self.db.child("Adagios").set(self.adagios)
                 await cbt.send("Adagio agregado con éxito")
             else:
                 await cbt.send("El adagio ya está registrado, "+self.Insultos.insultar())
