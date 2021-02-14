@@ -220,6 +220,33 @@ class YanLukas(commands.Cog):
                 corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
             await cbt.send(corotinho)
 
+    @commands.command(brief="Muestra los negros más quebrados de la mazmorra CBT",
+                      description="Muestra el bottom 5 de Yanburgueses del servidor")
+    async def xinyanking(self, cbt):
+        listoix = list(self.janpueblo.keys())
+
+        def key(item):
+            return self.janpueblo[item]
+
+        listoix = sorted(listoix, key=key, reverse=False)
+        max = 5
+        if len(listoix) < max:
+            max = len(listoix)
+        if not len(listoix):
+            await cbt.send("No hay nadie con registro de GIANLUCAS, bobo puto")
+        else:
+            corotinho = "Los " + str(max) + " negros más quebrados: \n"
+            # print(listoix)
+            for niggy in range(0, max):
+                c = listoix[niggy]
+                # print(c)
+                # print(self.janpueblo[c])
+                # print(self.sapo.get_user(int(c)))
+                sapaso = await self.sapo.fetch_user(int(c))
+                sapeiro = sapaso.display_name
+                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
+            await cbt.send(corotinho)
+
     @commands.command(brief="Invocar y avanzar una apuesta",
                       description="Comando multiuso. En su primera invocación, su estructura es >moneyman prompt opcion1 opcion2 ... opciónN. Es importante que cada uno de los argumentos del comando estén entre comillas. Una vez invocado así, se abren las apuestas, y la estructura del comando cambia a >moneyman (sin argumentos) para cerrar las apuestas. Durante este periodo, se puede apostar con >apostar. Finalmente, el comando >moneyman idOpcionGanadora reparte las hhanlux a los ganadores, y revierte el estado del comando al inicial.")
     async def moneyman(self, cbt, *args):
