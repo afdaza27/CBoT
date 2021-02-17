@@ -50,10 +50,10 @@ class YanLukas(commands.Cog):
     # SI SE VAN A RESTAR, SE PASA balor = -10
     # DEFAULT = 50
     def persistir(self, author, balor=50):
-        cbot.sign_in()
+        user = cbot.sign_in()
         sapillo = str(author.id)
         nombre = author.display_name
-        sapos = self.db.child("Sapos").get(cbot.user["idToken"])
+        sapos = self.db.child("Sapos").get(user["idToken"])
         bruh = False
         for sapo in sapos.each():
             if str(sapo.key()) == sapillo:
@@ -65,13 +65,13 @@ class YanLukas(commands.Cog):
             else:
                 self.janpueblo[sapillo] += balor
                 balor = self.janpueblo[sapillo]
-            self.db.child("Sapos").child(sapillo).update({"yanlukas":balor}, cbot.user["idToken"])
+            self.db.child("Sapos").child(sapillo).update({"yanlukas":balor}, user["idToken"])
         else:
             # Sólo se pueden registrar usuarios con valores POSITIVOS
             if balor > 0:
                 now = datetime.datetime.now()
                 current_time = now.strftime('%Y-%m-%d %H:%M:%S.%f')
-                self.db.child("Sapos").child(sapillo).set({"yanlukas":balor, "daily":current_time, "nombre":nombre}, cbot.user["idToken"])
+                self.db.child("Sapos").child(sapillo).set({"yanlukas":balor, "daily":current_time, "nombre":nombre}, user["idToken"])
                 self.janpueblo[sapillo] = 0 + balor
 
 
@@ -379,10 +379,11 @@ class YanLukas(commands.Cog):
                       description="Reclamar una cantidad de Yanlukas aleatoria cada 24 horas.")
     async def daily(self, cbt):
         sapillo = str(cbt.author.id)
+        user = cbot.sign_in()
         if sapillo in self.janpueblo.keys():
             now = datetime.datetime.now()
             current_time = now.strftime('%Y-%m-%d %H:%M:%S.%f')
-            last_daily = self.db.child("Sapos").child(sapillo).child("daily").get(cbot.user["idToken"]).val()
+            last_daily = self.db.child("Sapos").child(sapillo).child("daily").get(user["idToken"]).val()
             fecha_anterior = datetime.datetime.strptime(last_daily, '%Y-%m-%d %H:%M:%S.%f')
             diferencia_fechas = now - fecha_anterior
             if diferencia_fechas.days >= 1:
@@ -404,7 +405,7 @@ class YanLukas(commands.Cog):
                     await cbt.send(
                         cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
                 self.persistir(cbt.author, yanlukas)
-                self.db.child("Sapos").child(sapillo).update({"daily":current_time},cbot.user["idToken"])
+                self.db.child("Sapos").child(sapillo).update({"daily":current_time},user["idToken"])
             else:
                 await cbt.send("No sea codicioso, " + self.Insultos.insultar())
         else:

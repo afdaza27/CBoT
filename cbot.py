@@ -83,14 +83,14 @@ async def unload(cbt, cogote):
 
 @sapo.command()
 async def agregar_insulto(cbt, insulto_nuevo):
-    sign_in()
-    insultos = Insultos(get_db(), user)
+    user_bruh = sign_in()
+    insultos = Insultos(get_db(), user_bruh)
     lista_insultos = insultos.cargar_insultos()
     if await check_mod(cbt):
         if insulto_nuevo in lista_insultos:
             await cbt.send("Ese insulto ya está, " + insultos.insultar())
         else:
-            insultos.agregar_insulto(insulto_nuevo)
+            insultos.agregar_insulto(insulto_nuevo, user_bruh)
             await actualizar_insultos()
             await cbt.send(insulto_nuevo + " fue agregado a los insultos")
     else:

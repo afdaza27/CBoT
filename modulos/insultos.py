@@ -14,9 +14,9 @@ class Insultos:
             self.insultos.append(insulto.val())
         return self.insultos
 
-    def agregar_insulto(self, insulto_nuebo):
+    def agregar_insulto(self, insulto_nuebo, user):
         self.insultos.append(insulto_nuebo)
-        self.db.child("Insultos").set(self.insultos, self.user["idToken"])
+        self.db.child("Insultos").set(self.insultos, user["idToken"])
 
     def insultar(self):
         return self.insultos[random.randint(0, len(self.insultos)-1)]

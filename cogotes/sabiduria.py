@@ -19,8 +19,8 @@ class Sabiduria(commands.Cog):
         self.Insultos.cargar_insultos()
 
     def cargar_adagios(self):
-        cbot.sign_in()
-        adagios = self.db.child("Adagios").get(cbot.user["idToken"]).each()
+        user = cbot.sign_in()
+        adagios = self.db.child("Adagios").get(user["idToken"]).each()
         adagios_list = []
         for adagio in adagios:
             adagios_list.append(adagio.val())
@@ -41,11 +41,11 @@ class Sabiduria(commands.Cog):
 
     @commands.command(brief="Agrega un nuevo adagio", description="Agrega un nuevo adagio, este debe estar entre comillas.")
     async def agregar_adagio(self, cbt, nuevo_adagio):
-        cbot.sign_in()
+        user = cbot.sign_in()
         if await cbot.check_mod(cbt):
             if nuevo_adagio not in self.adagios:
                 self.adagios.append(nuevo_adagio)
-                self.db.child("Adagios").set(self.adagios, cbot.user["idToken"])
+                self.db.child("Adagios").set(self.adagios, user["idToken"])
                 await cbt.send("Adagio agregado con éxito")
             else:
                 await cbt.send("El adagio ya está registrado, "+self.Insultos.insultar())
