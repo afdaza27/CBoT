@@ -53,7 +53,8 @@ async def actualizar_insultos():
 
 @sapo.event
 async def on_command_error(cbt, error):
-    insultos = Insultos(get_db(), user)
+    error_user = sign_in()
+    insultos = Insultos(get_db(), error_user)
     insultos.cargar_insultos()
     if isinstance(error, CommandNotFound):
         await cbt.send("No sé de qué habla, " + insultos.insultar())
