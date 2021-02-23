@@ -7,6 +7,8 @@ class Insultos:
         self.db = db
         self.user = user
 
+    def refrescar_usuario(self, user):
+        self.user = user;
 
     def cargar_insultos(self):
         insultos = self.db.child("Insultos").get(self.user["idToken"]).each()

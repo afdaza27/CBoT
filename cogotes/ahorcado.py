@@ -26,6 +26,8 @@ class Ahorcado(commands.Cog):
 
 
     async def actualizar_insultos(self):
+        user = cbot.sign_in()
+        self.Insultos.refrescar_usuario(user)
         self.Insultos.cargar_insultos()
 
 
