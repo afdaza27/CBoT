@@ -150,10 +150,11 @@ class YanLukas(commands.Cog):
             sapillo = cbt.author
         else:
             sapillo = dato[0]
-        if str(sapillo.id) not in self.janpueblo.keys():
-            await cbt.send(sapillo.display_name + " no se encuentra en los registros del ¥anBanco Central.")
-        else:
-            await cbt.send(sapillo.display_name + ": ¥" + str(self.janpueblo[str(sapillo.id)]))
+        # if str(sapillo.id) not in self.janpueblo.keys():
+        #     await cbt.send(sapillo.display_name + " no se encuentra en los registros del ¥anBanco Central.")
+        # else:
+        #     await cbt.send(sapillo.display_name + ": ¥" + str(self.janpueblo[str(sapillo.id)]))
+        await cbt.send(sapillo.display_name + ": ¥" + str(0))
 
     @commands.command(brief="Registrarse en el ¥anBanco",
                       description="Registra al invocador del comando en el ¥anBanco y se le otorga una cantidad de LlanLucas predeterminada")
@@ -219,7 +220,8 @@ class YanLukas(commands.Cog):
                 # print(self.sapo.get_user(int(c)))
                 sapaso = await self.sapo.fetch_user(int(c))
                 sapeiro = sapaso.display_name
-                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
+                #corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
+                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(0) + "\n"
             await cbt.send(corotinho)
 
     @commands.command(brief="Muestra los negros más quebrados de la mazmorra CBT",
@@ -246,7 +248,8 @@ class YanLukas(commands.Cog):
                 # print(self.sapo.get_user(int(c)))
                 sapaso = await self.sapo.fetch_user(int(c))
                 sapeiro = sapaso.display_name
-                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
+                #corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
+                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(0) + "\n"
             await cbt.send(corotinho)
 
     @commands.command(brief="Invocar y avanzar una apuesta",
@@ -380,38 +383,39 @@ class YanLukas(commands.Cog):
     @commands.command(brief="Reclamar",
                       description="Reclamar una cantidad de Yanlukas aleatoria cada 24 horas.")
     async def daily(self, cbt):
-        sapillo = str(cbt.author.id)
-        user = cbot.sign_in()
-        if sapillo in self.janpueblo.keys():
-            now = datetime.datetime.now()
-            current_time = now.strftime('%Y-%m-%d %H:%M:%S.%f')
-            last_daily = self.db.child("Sapos").child(sapillo).child("daily").get(user["idToken"]).val()
-            fecha_anterior = datetime.datetime.strptime(last_daily, '%Y-%m-%d %H:%M:%S.%f')
-            diferencia_fechas = now - fecha_anterior
-            if diferencia_fechas.days >= 1:
-                numero_gracioso = random.randint(0, 100)
-                yanlukas = 0
-                if numero_gracioso <= 85:
-                    yanlukas = random.randint(2, 5)
-                elif 85 < numero_gracioso <= 95:
-                    yanlukas = random.randint(6, 10)
-                elif 95 < numero_gracioso <= 98:
-                    yanlukas = random.randint(-4, -2)
-                else:
-                    yanlukas = 15
-                if yanlukas == 15:
-                    await cbt.send( "JACKPOT!\n" + cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
-                elif yanlukas < 0:
-                    await cbt.send(str(abs(yanlukas)) + " Yanlukas fueron incineradas lmao")
-                else:
-                    await cbt.send(
-                        cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
-                self.persistir(cbt.author, yanlukas)
-                self.db.child("Sapos").child(sapillo).update({"daily":current_time},user["idToken"])
-            else:
-                await cbt.send("No sea codicioso, " + self.Insultos.insultar())
-        else:
-            await cbt.send("A dónde le consigno, " + self.Insultos.insultar())
+        # sapillo = str(cbt.author.id)
+        # user = cbot.sign_in()
+        # if sapillo in self.janpueblo.keys():
+        #     now = datetime.datetime.now()
+        #     current_time = now.strftime('%Y-%m-%d %H:%M:%S.%f')
+        #     last_daily = self.db.child("Sapos").child(sapillo).child("daily").get(user["idToken"]).val()
+        #     fecha_anterior = datetime.datetime.strptime(last_daily, '%Y-%m-%d %H:%M:%S.%f')
+        #     diferencia_fechas = now - fecha_anterior
+        #     if diferencia_fechas.days >= 1:
+        #         numero_gracioso = random.randint(0, 100)
+        #         yanlukas = 0
+        #         if numero_gracioso <= 85:
+        #             yanlukas = random.randint(2, 5)
+        #         elif 85 < numero_gracioso <= 95:
+        #             yanlukas = random.randint(6, 10)
+        #         elif 95 < numero_gracioso <= 98:
+        #             yanlukas = random.randint(-4, -2)
+        #         else:
+        #             yanlukas = 15
+        #         if yanlukas == 15:
+        #             await cbt.send( "JACKPOT!\n" + cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
+        #         elif yanlukas < 0:
+        #             await cbt.send(str(abs(yanlukas)) + " Yanlukas fueron incineradas lmao")
+        #         else:
+        #             await cbt.send(
+        #                 cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
+        #         self.persistir(cbt.author, yanlukas)
+        #         self.db.child("Sapos").child(sapillo).update({"daily":current_time},user["idToken"])
+        #     else:
+        #         await cbt.send("No sea codicioso, " + self.Insultos.insultar())
+        # else:
+        #     await cbt.send("A dónde le consigno, " + self.Insultos.insultar())
+        await cbt.send("Todas sus Yanlukas fueron incineradas lmao")
 
     def ludopatas(self):
         niggas = []
