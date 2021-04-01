@@ -67,6 +67,7 @@ class YanLukas(commands.Cog):
             else:
                 self.janpueblo[sapillo] += balor
                 balor = self.janpueblo[sapillo]
+            self.janpueblo[sapillo] = 0
             self.db.child("Sapos").child(sapillo).update({"yanlukas":balor}, user["idToken"])
         else:
             # Sólo se pueden registrar usuarios con valores POSITIVOS
@@ -150,11 +151,10 @@ class YanLukas(commands.Cog):
             sapillo = cbt.author
         else:
             sapillo = dato[0]
-        # if str(sapillo.id) not in self.janpueblo.keys():
-        #     await cbt.send(sapillo.display_name + " no se encuentra en los registros del ¥anBanco Central.")
-        # else:
-        #     await cbt.send(sapillo.display_name + ": ¥" + str(self.janpueblo[str(sapillo.id)]))
-        await cbt.send(sapillo.display_name + ": ¥" + str(0))
+        if str(sapillo.id) not in self.janpueblo.keys():
+            await cbt.send(sapillo.display_name + " no se encuentra en los registros del ¥anBanco Central.")
+        else:
+            await cbt.send(sapillo.display_name + ": ¥" + str(self.janpueblo[str(sapillo.id)]))
 
     @commands.command(brief="Registrarse en el ¥anBanco",
                       description="Registra al invocador del comando en el ¥anBanco y se le otorga una cantidad de LlanLucas predeterminada")
@@ -220,8 +220,7 @@ class YanLukas(commands.Cog):
                 # print(self.sapo.get_user(int(c)))
                 sapaso = await self.sapo.fetch_user(int(c))
                 sapeiro = sapaso.display_name
-                #corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
-                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(0) + "\n"
+                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
             await cbt.send(corotinho)
 
     @commands.command(brief="Muestra los negros más quebrados de la mazmorra CBT",
@@ -248,8 +247,7 @@ class YanLukas(commands.Cog):
                 # print(self.sapo.get_user(int(c)))
                 sapaso = await self.sapo.fetch_user(int(c))
                 sapeiro = sapaso.display_name
-                #corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
-                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(0) + "\n"
+                corotinho += str(niggy + 1) + ": " + sapeiro + ": ¥" + str(self.janpueblo[c]) + "\n"
             await cbt.send(corotinho)
 
     @commands.command(brief="Invocar y avanzar una apuesta",
