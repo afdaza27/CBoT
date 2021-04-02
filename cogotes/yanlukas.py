@@ -67,7 +67,6 @@ class YanLukas(commands.Cog):
             else:
                 self.janpueblo[sapillo] += balor
                 balor = self.janpueblo[sapillo]
-            self.janpueblo[sapillo] = 0
             self.db.child("Sapos").child(sapillo).update({"yanlukas":balor}, user["idToken"])
         else:
             # Sólo se pueden registrar usuarios con valores POSITIVOS
@@ -400,16 +399,15 @@ class YanLukas(commands.Cog):
                     yanlukas = random.randint(-4, -2)
                 else:
                     yanlukas = 15
-                # if yanlukas == 15:
-                #     await cbt.send( "JACKPOT!\n" + cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
-                # elif yanlukas < 0:
-                #     await cbt.send(str(abs(yanlukas)) + " Yanlukas fueron incineradas lmao")
-                # else:
-                #     await cbt.send(
-                #         cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
+                if yanlukas == 15:
+                    await cbt.send( "JACKPOT!\n" + cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
+                elif yanlukas < 0:
+                    await cbt.send(str(abs(yanlukas)) + " Yanlukas fueron incineradas lmao")
+                else:
+                    await cbt.send(
+                        cbt.author.display_name + " ha reclamado " + str(yanlukas) + " Yanlucas. Presione ALT+F4 para reclamar sus Yanluks diarias.")
                 self.persistir(cbt.author, yanlukas)
                 self.db.child("Sapos").child(sapillo).update({"daily":current_time},user["idToken"])
-                await cbt.send("Todas sus Yanlukas fueron incineradas lmao")
             else:
                 await cbt.send("No sea codicioso, " + self.Insultos.insultar())
         else:
