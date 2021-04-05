@@ -45,7 +45,9 @@ class Casino(commands.Cog):
         print("Casino abierto.")
 
     @commands.command(brief="Máquina tragamonedas",
-                      description="")
+                      description="Máquina tragamonedas.\n La estructura del comando es >slots [apuesta], en donde la apuesta debe ser mayor o igual a 5 YanLukas. Si no se hace explícita la apuesta, se toma como el mínimo (5). \n"
+                                  "Las tasas de retorno son las siguientes (multiplicativas):\n"
+                                  "<:EggMan:755200831623790631> -4\n<:dedede1:339595423109087232> -2\n🍄 1*\n🐜 2\n🍞 3\n🥛 4\n🦀 5\n🐸 7\n💯 10\n<:flavio:339595337356410883> 12\n<:cogote:755197902049116201> 15\n<:DaBaby:819615780282302485> 17\n<:greed:339595362551595009> 20\n")
     async def slots(self, cbt, s="5"):
         bid = int(s)
         yanlukas = self.sapo.get_cog("YanLukas")
