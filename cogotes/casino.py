@@ -28,7 +28,8 @@ class Casino(commands.Cog):
             "greed": ["<:greed:339595362551595009>", 20]
 
         }
-        self.defaultR = ["mongo"]*5 + ["formiga"]*5 + ["pan"]*4 + ["leche"]*4 + ["crab"]*3 + ["sapo"]*3 + ["100"]*2 + ["flavio"]*2 + ["cogote"]*2 + ["dababy"] + ["greed"]
+        self.defaultR = ["mongo"]*5 + ["formiga"]*4 + ["pan"]*4 + ["leche"]*3 + ["crab"]*3 + ["sapo"]*2 + ["100"]*2 + ["flavio"] + ["cogote"] + ["dababy"] + ["greed"]
+        self.pity = 0
         self.db = cbot.get_db()
         self.Insultos = Insultos(self.db, cbot.user)
         self.Insultos.cargar_insultos()
@@ -69,6 +70,18 @@ class Casino(commands.Cog):
             s1 = locR[random.randint(0, len(locR) - 1)]
             s2 = locR[random.randint(0, len(locR) - 1)]
             s3 = locR[random.randint(0, len(locR) - 1)]
+            #pity
+            if s1!=s2 or s2!=s3:
+                p = random.random()
+                if p<self.pity:
+                    s2 = s1
+                    s3 = s1
+                    p = random.random()
+                    #probabilidad de que se rompa el pity
+                    if p<0.75:
+                        self.pity = 0
+                else:
+                    self.pity+= random.random()/20
             r = "|=============|\n| [{p1}] [{p2}] [{p3}] |\n|=====|¥L|=====|\n\n".format(p1=self.glyphs[s1][0],p2=self.glyphs[s2][0],p3=self.glyphs[s3][0])
             amogus=""
             if s1==s2 and s2==s3:
