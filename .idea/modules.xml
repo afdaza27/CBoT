@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/CBoT.iml" filepath="$PROJECT_DIR$/.idea/CBoT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../bython/.idea/bython.iml" filepath="$PROJECT_DIR$/../bython/.idea/bython.iml" />
     </modules>
   </component>
 </project>
