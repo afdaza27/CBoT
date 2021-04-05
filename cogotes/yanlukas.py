@@ -76,7 +76,7 @@ class YanLukas(commands.Cog):
                 self.db.child("Sapos").child(sapillo).set({"yanlukas":balor, "daily":current_time, "nombre":nombre}, user["idToken"])
                 self.janpueblo[sapillo] = 0 + balor
 
-    def syncYanking(self):
+    async def syncYanking(self):
         listoix = list(self.janpueblo.keys())
         def key(item):
             return self.janpueblo[item]

@@ -47,38 +47,45 @@ class Casino(commands.Cog):
                       description="")
     async def slots(self, cbt, s="5"):
         bid = int(s)
-        yanking = YanLukas.syncYanking()
-        if s<5:
-            await cbt.send("La apuesta mínima es de 5 ¥anLukas, "+ self.Insultos.insultar())
+        yanlukas = self.sapo.get_cog("YanLukas")
+        yanking = await yanlukas.syncYanking()
+        if bid<5:
+            await cbt.send("La apuesta mínima es de 5 ¥anLukas, "+ self.Insultos.insultar()+".\nLas perdió por bobo")
+            yanlukas.persistir(cbt.author, -bid)
         elif str(cbt.author.id) not in yanking:
             await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.cogote)
-        elif YanLukas.janpueblo[str(cbt.author.id)] < 5:
+        elif yanlukas.janpueblo[str(cbt.author.id)] < 5:
             await cbt.send("USTED no tiene suficientes GIANLUKAS, bobo pobre " + self.cogote)
         else:
-            if bid >= YanLukas.janpueblo[str(cbt.author.id)]:
-                bid = YanLukas.janpueblo[str(cbt.author.id)]
+            if bid >= yanlukas.janpueblo[str(cbt.author.id)]:
+                bid = yanlukas.janpueblo[str(cbt.author.id)]
                 await cbt.send("Si señores, ALL IN")
-            YanLukas.persistir(cbt.author, -bid)
+            yanlukas.persistir(cbt.author, -bid)
             #Aquí se riggea la máquina lmao
-            implying = yanking.index(cbt.author.id)
+            implying = yanking.index(str(cbt.author.id))
             rigged = int(((len(yanking)-implying)/5) + 1)
             # pranked
-            locR = self.defaultR + ["eggman"]*rigged//2 + ["dedede"]*rigged
+            locR = self.defaultR + ["eggman"]*(rigged//2) + ["dedede"]*rigged
             s1 = locR[random.randint(0, len(locR) - 1)]
             s2 = locR[random.randint(0, len(locR) - 1)]
             s3 = locR[random.randint(0, len(locR) - 1)]
             r = "|=============|\n| [{p1}] [{p2}] [{p3}] |\n|=====|¥L|=====|\n\n".format(p1=self.glyphs[s1][0],p2=self.glyphs[s2][0],p3=self.glyphs[s3][0])
+            amogus=""
             if s1==s2 and s2==s3:
                 yl = bid*self.glyphs[s1][1]
-                YanLukas.persistir(cbt.author, bid)
+                yanlukas.persistir(cbt.author, yl)
                 if(yl<0):
-                    r+="Perdió, lmao\n{yan} ¥anlukas fueron incineradas"
+                    r+="Perdió, lmao\n{yan} ¥anlukas fueron incineradas".format(yan = -yl)
                 else:
                     if s1=="greed":
                         r+="¡¡¡JACKPOT!!!\n"
-                    r += "¡Ganó {yan} ¥anlukas!"
+                    elif s1=="mongo":
+                        lista_mongos = os.listdir("./AMOGUS")
+                        amogus = lista_mongos[random.randint(0, len(lista_mongos)-1)]
+                    r += "¡Ganó {yan} ¥anlukas!".format(yan = yl)
             await cbt.send(r)
-
+            if amogus != "":
+                await cbt.send(file=discord.File("./AMOGUS/"+amogus))
 
 
 def setup(sapo):
