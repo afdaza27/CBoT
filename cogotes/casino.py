@@ -57,9 +57,9 @@ class Casino(commands.Cog):
             await cbt.send("La apuesta mínima es de 5 ¥anLukas, "+ self.Insultos.insultar()+".\nLas perdió por bobo")
             yanlukas.persistir(cbt.author, -bid)
         elif str(cbt.author.id) not in yanking:
-            await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.cogote)
+            await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.glyphs["cogote"][0])
         elif yanlukas.janpueblo[str(cbt.author.id)] < 5:
-            await cbt.send("USTED no tiene suficientes GIANLUKAS, bobo pobre " + self.cogote)
+            await cbt.send("USTED no tiene suficientes GIANLUKAS, bobo pobre " + self.glyphs["cogote"][0])
         else:
             if bid >= yanlukas.janpueblo[str(cbt.author.id)]:
                 bid = yanlukas.janpueblo[str(cbt.author.id)]
