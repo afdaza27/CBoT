@@ -45,7 +45,10 @@ class Casino(commands.Cog):
         print("Casino abierto.")
 
     @commands.command(brief="Máquina tragamonedas",
-                      description="")
+                      description="Máquina tragamonedas.\n La estructura del comando es >slots [apuesta], en donde la apuesta debe ser mayor o igual a 5 YanLukas. Si no se hace explícita la apuesta, se toma como el mínimo (5). \n"
+                                  "Las tasas de retorno son las siguientes (multiplicativas):\n"
+                                  "Eggman -4\nDedede -2\n🍄 1*\n🐜 2\n🍞 3\n🥛 4\n🦀 5\n🐸 7\n💯 10\nFlavio 12\nCogote 15\nDaBaby 17\nGreed 20\n"
+                                  "*Sorpresa")
     async def slots(self, cbt, s="5"):
         bid = int(s)
         yanlukas = self.sapo.get_cog("YanLukas")
@@ -54,9 +57,9 @@ class Casino(commands.Cog):
             await cbt.send("La apuesta mínima es de 5 ¥anLukas, "+ self.Insultos.insultar()+".\nLas perdió por bobo")
             yanlukas.persistir(cbt.author, -bid)
         elif str(cbt.author.id) not in yanking:
-            await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.cogote)
+            await cbt.send("USTED no tiene registro de GIANLUKAS, bobo carepulgar " + self.glyphs["cogote"][0])
         elif yanlukas.janpueblo[str(cbt.author.id)] < 5:
-            await cbt.send("USTED no tiene suficientes GIANLUKAS, bobo pobre " + self.cogote)
+            await cbt.send("USTED no tiene suficientes GIANLUKAS, bobo pobre " + self.glyphs["cogote"][0])
         else:
             if bid >= yanlukas.janpueblo[str(cbt.author.id)]:
                 bid = yanlukas.janpueblo[str(cbt.author.id)]
