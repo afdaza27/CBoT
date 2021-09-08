@@ -50,6 +50,7 @@ async def actualizar_insultos():
     await sapo.get_cog("YanLukas").actualizar_insultos()
     await sapo.get_cog("Sabiduria").actualizar_insultos()
     await sapo.get_cog("Casino").actualizar_insultos()
+    await sapo.get_cog("Bich").actualizar_insultos()
 
 
 @sapo.event
