@@ -170,7 +170,7 @@ class MusicPlayer:
         return self.bot.loop.create_task(self._cog.cleanup(guild))
 
 
-class bich(commands.Cog):
+class Bich(commands.Cog):
     """Music related commands."""
 
     __slots__ = ('bot', 'players')
@@ -739,4 +739,4 @@ class bich(commands.Cog):
 #
 #
 def setup(sapo):
-    sapo.add_cog(bich(sapo))
+    sapo.add_cog(Bich(sapo))
