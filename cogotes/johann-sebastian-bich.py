@@ -178,6 +178,13 @@ class bich(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.players = {}
+        self.Insultos = Insultos(cbot.get_db(), cbot.user)
+        self.Insultos.cargar_insultos()
+
+    async def actualizar_insultos(self):
+        user = cbot.sign_in()
+        self.Insultos.refrescar_usuario(user)
+        self.Insultos.cargar_insultos()
 
     async def cleanup(self, guild):
         try:
